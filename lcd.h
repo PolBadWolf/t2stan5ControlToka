@@ -11,9 +11,9 @@ void LoadLcd(void);
 extern unsigned int blinc_line1;      /* Регистр флагов мигания 1 строки индикатора */
 extern unsigned int blinc_line2;      /* Регистр флагов мигания 2 строки индикатора */
 // User
-void Show(unsigned char pos, unsigned char *t);
+void Show(unsigned char pos, char *t);
 void ClearDisplay(void); /* Очистить индикатор */
-void ShowChar(unsigned char pos, unsigned char ch);
+void ShowChar(unsigned char pos, char ch);
 unsigned char scan_ready(void);
 unsigned char read_key(void);
 // Показать число с ведущими нулями в десятичном виде в конкретной позиции с определенным количеством цифр

@@ -27,7 +27,7 @@
 #define BELL_OFF     PORTG |= BELL
 #define BELL_TOGGLE  PORTG ^= BELL
 
-unsigned char display[32]; /* Дисплейный буфер на 32 байта */
+         char display[32]; /* Дисплейный буфер на 32 байта */
 unsigned char disp_count;  /* Счетчик указатель индикации */
 unsigned char kbd_count;   /* Счетчик указатель скан-кода */
 unsigned char time_return;     /* Счетчик таймаута возвращения в рабочий режим */
@@ -154,25 +154,25 @@ void ClearDisplay(void) /* Очистить индикатор */
 {
  //if(!DISPLAY_CLEAR) /* Если дисплей не был очищен, очистить */
  {
-  unsigned char *ptr_1 = &display[0];
+  char *ptr_1 = &display[0];
   for(;ptr_1 <= &display[31];)  *ptr_1++ = 0x20;
   //SET_DISPLAY_CLEAR; /* Установить признак чистого дисплея */
  }
 }
 
 /* Вывести строку на индикатор с заданной позиции */
-void Show(unsigned char pos, unsigned char* t)
+void Show(unsigned char pos, char *t)
 {
- unsigned char *s;
+    char *s;
 // if(pos < 32)
 // {
-  s = display + pos;
+  s = (char *)(display + pos);
   while(*t)  *s++ = *t++;
 // }
 }
 
 /* Вывести символ на индикатор с заданной позиции */
-void ShowChar(unsigned char pos, unsigned char ch)
+void ShowChar(unsigned char pos, char ch)
 {
 //if(pos < 32)
  display[pos] = ch;
@@ -181,7 +181,7 @@ void ShowChar(unsigned char pos, unsigned char ch)
 /* Показать значение температуры в десятичном виде 00.0 в конкретной позиции */
 void ShowTemperature(unsigned char pos, unsigned int digit)
 {
- unsigned char *s;
+    char *s;
  //unsigned int i;
  if((pos > 31) || ((pos + 4) > 32))
   return;
@@ -206,7 +206,7 @@ void ShowTemperature(unsigned char pos, unsigned int digit)
 /* Показать число с ведущими пробелами в десятичном виде в конкретной позиции с определенным количеством цифр */
 void ShowDigit(unsigned char pos, unsigned char numdigit, unsigned int digit)
 {
- unsigned char *s;
+    char *s;
  unsigned int i;
 if(digit == 0)
  {
@@ -226,7 +226,7 @@ for(i = 10;numdigit >1;i*=10, numdigit--)
 /* Показать число с ведущими нулями в десятичном виде в конкретной позиции с определенным количеством цифр */
 void ShowDigitZ(unsigned char pos, unsigned char numdigit, unsigned int digit)
 {
- unsigned char *s;
+    char *s;
  unsigned int i;
 if(digit == 0)
  {
@@ -483,7 +483,7 @@ void ParametrUp(void *ptr,unsigned int size,unsigned int min_param,unsigned int 
 {
 if(size == sizeof(unsigned int)) /* Если параметр типа unsigned int */
  {
-  unsigned int * param = ptr;
+  unsigned int *param = (unsigned int *)ptr;
   if(*param < max_param)
   {  // Если флаг признака действия автоповтора установлен, то увеличить параметр на 10 иначе на 1
    if(KEYB_REPEAT)
@@ -513,7 +513,7 @@ if(size == sizeof(unsigned int)) /* Если параметр типа unsigned int */
  }
 else /* Иначе параметр типа unsigned char */
  {
-  unsigned char * param = ptr;
+  unsigned char *param = (unsigned char *)ptr;
   if(*param < max_param)
   {  // Если флаг признака действия автоповтора установлен, то увеличить параметр на 10 иначе на 1
    if(KEYB_REPEAT)
@@ -549,7 +549,7 @@ void ParametrDown(void *ptr,unsigned int size,unsigned int min_param,unsigned in
 {
 if(size == sizeof(unsigned int)) /* Если параметр типа unsigned int */
  {
-  unsigned int * param = ptr;
+  unsigned int *param = (unsigned int *)ptr;
   if(*param > min_param)
   { // Если флаг признака действия автоповтора установлен, то уменьшить параметр на 10 иначе на 1
    if(KEYB_REPEAT)
@@ -579,7 +579,7 @@ if(size == sizeof(unsigned int)) /* Если параметр типа unsigned int */
  }
 else /* Иначе параметр типа unsigned char */
  {
-  unsigned char * param = ptr;
+  unsigned char *param = (unsigned char *)ptr;
   if(*param > min_param)
   { // Если флаг признака действия автоповтора установлен, то уменьшить параметр на 10 иначе на 1
    if(KEYB_REPEAT)

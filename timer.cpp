@@ -82,26 +82,26 @@ void timer_sys_pusk(void)//Инициализауия таймера/счётчика 0 (2 КГц)
 }
 void Skorost (void)//Измерение линейной скорости стана
 {
-flag_new=D_1;//прочитать новое значение датчика 
-if (flag_reset_shet==1)
-{
- shethik_impulsow++;//инкремент счётчика 
-}
-if (shethik_impulsow>=3000)//проверка счётчика на переполнение
-{
- flag_reset_shet=0;//Счёт запрещён
- shethik_impulsow=0;//бнуление счётчика
- Buf_impuls=0;//обнуление буфера данных, полученных со счётчика импульсов, для просмотра
- rezultat_skorosti=0;//обнуление 
-}
-if ((flag_old!=flag_new)&&(flag_new!=0))//если старое значение датчика не равно новому и новое не равно нулю
-{
-flag_reset_shet=1;//разрешон
-rezultat_skorosti=(120000/1)/(shethik_impulsow);//Расчитать скорость об/мин (1-кол.секторов)            
-Buf_impuls=shethik_impulsow;//передача данных со счётчика в буфер данных для просмотра
-shethik_impulsow=0;//бнуление счётчика 
-}                                       
-flag_old=flag_new;//новое значение датчика присвоить старому
+    nsSpeed::flag_new=D_1;//прочитать новое значение датчика 
+    if (nsSpeed::flag_reset_shet==1)
+    {
+        nsSpeed::shethik_impulsow++;//инкремент счётчика 
+    }
+    if (nsSpeed::shethik_impulsow>=3000)//проверка счётчика на переполнение
+    {
+        nsSpeed::flag_reset_shet=0;//Счёт запрещён
+        nsSpeed::shethik_impulsow=0;//бнуление счётчика
+        Buf_impuls=0;//обнуление буфера данных, полученных со счётчика импульсов, для просмотра
+        nsSpeed::rezultat_skorosti=0;//обнуление 
+    }
+    if ((nsSpeed::flag_old!=nsSpeed::flag_new)&&(nsSpeed::flag_new!=0))//если старое значение датчика не равно новому и новое не равно нулю
+    {
+        nsSpeed::flag_reset_shet=1;//разрешон
+        nsSpeed::rezultat_skorosti=(120000/1)/(nsSpeed::shethik_impulsow);//Расчитать скорость об/мин (1-кол.секторов)            
+        Buf_impuls=nsSpeed::shethik_impulsow;//передача данных со счётчика в буфер данных для просмотра
+        nsSpeed::shethik_impulsow=0;//бнуление счётчика 
+    }                                       
+    nsSpeed::flag_old=nsSpeed::flag_new;//новое значение датчика присвоить старому
 }
 
 void usred (void)

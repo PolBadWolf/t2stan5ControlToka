@@ -10,7 +10,6 @@ unsigned char modes=0;
 //---------------------------Переменные, флаги, константы для скорости-------------------------------------------
 extern unsigned int shethik_impulsow;//Cчётчик импульсов
 extern unsigned int Buf_impuls;//Буфер импульсов для просмотра
-extern unsigned int rezultat_skorosti;// скорость об/мин 
 unsigned int S=0;//Длинна окружности
 unsigned long skorost_stana=0;//скорость стана метры в минуту
 unsigned long bufer_skorost=0;//хранение скорости стана метры в минуту 
@@ -41,7 +40,7 @@ if (D_1==1)
 {ShowChar (15,3);} 
 //-----------------------------Скорость стана-----------------------------------
 __disable_interrupt();//Запретить глобальное прерывание
-  bufer_skorost=rezultat_skorosti;//об.мин 
+bufer_skorost=nsSpeed::rezultat_skorosti;//об.мин 
 __enable_interrupt(); // Разрешить глобальное прерывание 
 skorost_stana=(S*bufer_skorost/10);//об.мин * длинну окружности (метры в минуту)
 ShowDigitZ (4,2,skorost_stana);//Вывод скорости стана M/МИН
@@ -508,7 +507,7 @@ ShowDigitZ(2,5,Buf_impuls);
 __enable_interrupt(); // Разрешить глобальное прерывание 
 Show(19,"об/мин"); 
 __disable_interrupt();//Запретить глобальное прерывание
-ShowDigitZ(16,3,rezultat_skorosti);//об/мин
+ShowDigitZ(16,3,nsSpeed::rezultat_skorosti);//об/мин
 __enable_interrupt(); // Разрешить глобальное прерывание 
 Show(8,"АЦП:");
 __disable_interrupt();//Запретить глобальное прерывание

@@ -29,13 +29,13 @@
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd2><Wnd3><Tabs><Tab><Identity>TabID-17390-2058</Identity><TabName>Build</TabName><Factory>Build</Factory><Session/></Tab><Tab><Identity>TabID-20130-2826</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd3></Windows>
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3><Tabs><Tab><Identity>TabID-17390-2058</Identity><TabName>Build</TabName><Factory>Build</Factory><Session/></Tab><Tab><Identity>TabID-20130-2826</Identity><TabName>Find in Files</TabName><Factory>Find-in-Files</Factory><Session/></Tab></Tabs><SelectedTab>1</SelectedTab></Wnd3></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\timer.cpp</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\SpeedMetr.cpp</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>197</SelStart><SelEnd>514</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\SpeedMetr.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>43</SelStart><SelEnd>43</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\menu.cpp</Filename><XPos>0</XPos><YPos>11</YPos><SelStart>1894</SelStart><SelEnd>1894</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\lcd.cpp</Filename><XPos>0</XPos><YPos>213</YPos><SelStart>10946</SelStart><SelEnd>10946</SelEnd></Tab><ActiveTab>4</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\lcd.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>523</SelStart><SelEnd>523</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\timer.cpp</Filename><XPos>0</XPos><YPos>84</YPos><SelStart>3752</SelStart><SelEnd>3752</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\SpeedMetr.cpp</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>229</SelStart><SelEnd>229</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\SpeedMetr.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>84</SelStart><SelEnd>84</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\menu.cpp</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>708</SelStart><SelEnd>708</SelEnd></Tab><ActiveTab>3</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\lcd.cpp</Filename><XPos>0</XPos><YPos>141</YPos><SelStart>11127</SelStart><SelEnd>11127</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>D:\GitHub\t2stan5ControlToka\lcd.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>523</SelStart><SelEnd>523</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       

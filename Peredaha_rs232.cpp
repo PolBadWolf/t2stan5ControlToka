@@ -1,11 +1,14 @@
 
 #include "Peredaha_rs232.h"
 #include "main.h"
+//-------------------------Переменные и флаги для Задержки передачи данных в RS-----------------------------------------------
+unsigned int Z1,Z2;
+unsigned char Start_Data_RS485=0;//Если 1-передача в RS-485 разрешена.Если 0-запрещена.
+unsigned char Start_Data_RS=0;//Если 1-передача в RS-232 разрешена.Если 0-запрещена.
 //----------------------Переменные для передачи данных в RS232------------//
-extern unsigned long skorost_stana;//Конечная скорость стана м/мин
-extern unsigned long ACP_DANNIE_RS;//Подготовленные  данные ACP для передачи в RS232
-extern unsigned int  Pirometr;//Данные с пирометра
-extern unsigned char Start_Data_RS;//Флаг разрешения передачи данных (переодичность 2 раза в 1сек.)0-запрещено.1-разрешено.
+//extern unsigned long ACP_DANNIE_RS;//Подготовленные  данные ACP для передачи в RS232
+//extern unsigned int  Pirometr;//Данные с пирометра
+//extern unsigned char Start_Data_RS;//Флаг разрешения передачи данных (переодичность 2 раза в 1сек.)0-запрещено.1-разрешено.
 //-------Переменные для переобразования в текстовый вид данных------------//
 unsigned char str_skorost_stana[10];
 unsigned char str_ACP_DANNIE_RS[10];
@@ -41,12 +44,12 @@ void Long2String( unsigned char *pos, unsigned char n, unsigned long digit, unsi
 }
 void Peredaha_rs232 (void)
 {
-if (Start_Data_RS==1)
+    if (Start_Data_RS==1)
 {
 Start_Data_RS=0;//Сброс флага в ноль
 //-------------------------------------------------------------------------------------------------------------------------------
-Long2String(str_skorost_stana,6,skorost_stana,2);//Преобразование цифрового значения линейной скорости в текстовое  
-Long2String(str_ACP_DANNIE_RS,5,ACP_DANNIE_RS,0 );//Преобразование цифрового усреднённого значения с АЦП в текстовое  
+Long2String(str_skorost_stana,6,nsSpeed::SpeedStana(),2);//Преобразование цифрового значения линейной скорости в текстовое  
+Long2String(str_ACP_DANNIE_RS,5,nsAcp::ACP_DANNIE_RS,0 );//Преобразование цифрового усреднённого значения с АЦП в текстовое  
 Long2String(str_PIROMETR,5,Pirometr,0);//Преобразование цифрового значения с перометра в текстовое
 Kontr_summa_dannix[0] =str_skorost_stana[0];
 Kontr_summa_dannix[1] =str_skorost_stana[1];

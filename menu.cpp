@@ -2,62 +2,55 @@
 #include "menu.h"
 #include "main.h"
 
-//--------------------------------------------------------------------------------------------------------------------------------
-int P1,P2,P3,P4,P5;//Переменные для ввода пароля
-unsigned char modes=0;
-//---------------------------------------------------------------------------------------------------------------------------------
-//---------------------------Переменные, флаги, константы для скорости-------------------------------------------
-//extern unsigned int shethik_impulsow;//Cчётчик импульсов
-//extern unsigned int Buf_impuls;//Буфер импульсов для просмотра
-unsigned int S=0;//Длинна окружности
-unsigned long skorost_stana=0;//скорость стана метры в минуту
-unsigned long bufer_skorost=0;//хранение скорости стана метры в минуту 
-extern unsigned char flag_reset_shet;//Флаг остановки измерения-Если 1 счёт разрешон 0-запрещён
-//----------------------------Переменные, флаги, константы для АЦП---------------------------------------------
-extern unsigned long ACP;//Коэфициент для АЦП (Расчёт нового коэффициента 1).(1204-Korecsia_zero)=rez 2).1000/rez=Новый коэффициент.Расчёт смещения нуля:
-extern unsigned long acp_date;//Голые данные с ацп
-extern unsigned long Rezult_ADC;//Переменная для вывода значения с АЦП на индикатор
-//---------------------------------------------------------------------------------------------
-//------------------------Переменные, флаги, константы для Пирометра---------------------------
-unsigned int  Pirometr;
-//---------------------------------------------------------------------------------------------
+namespace nsMenu
+{
+    //-------------------------------------------------------------------------
+    int P1,P2,P3,P4,P5;//Переменные для ввода пароля
+    unsigned char modes=0;
+    //-------------------------------------------------------------------------
+    //---------------------------Переменные, флаги, константы для скорости-----
+    //-------------------------------------------------------------------------
 void Dummy (void)
 {}
-void Indicasia (void)//Основная индикация
-{
-//-----------------вывод температуры-------------------------------------
-Show (23,"T="); 
-ShowDigitZ (25,4,Pirometr);
-Show (31,"C");
-ShowChar (30,7);
-//-----------------------------------------------------------------------
-//индикация работы индуктивного датчика
-Show (13,"Д1"); 
-if (nsSpeed::D_1==0)
-{ShowChar (15,4);}
-if (nsSpeed::D_1==1) 
-{ShowChar (15,3);} 
-//-----------------------------Скорость стана-----------------------------------
-__disable_interrupt();//Запретить глобальное прерывание
-bufer_skorost=nsSpeed::rezultat_skorosti;//об.мин 
-__enable_interrupt(); // Разрешить глобальное прерывание 
-skorost_stana=(S*bufer_skorost/10);//об.мин * длинну окружности (метры в минуту)
-ShowDigitZ (4,2,skorost_stana);//Вывод скорости стана M/МИН
-Show (3,",");
-ShowDigitZ (0,3,skorost_stana/100);
-Show (7,"М/МИН");
-//------------------------------------------------------------------------------
-//---------------------------------АЦП------------------------------------------
-__disable_interrupt();//Запретить глобальное прерывание
-ACP_DANNIE=Rezult_ADC;
-__enable_interrupt(); // Разрешить глобальное прерывание 
-Show (20,"A");
-//--------------------------Вывод данных с АЦП----------------------------------
-ACP_DANNIE=(ACP_DANNIE-0)*ACP/1000;
-ACP_DANNIE_RS=ACP_DANNIE+0;
-ShowDigitZ (16,3,(ACP_DANNIE+0));//Вывод данных с АЦП
-//----------------------------------------------------------------------------------
-}
+    //-------------------------------------------------------------------------
+    // Основная индикация
+    void Indicasia (void)
+    {
+        unsigned long ACP_DANNIE    = 0;    // Полученные данные с АЦП
+        //---------чтение скорости стана-----------------------------------
+        unsigned long speed = nsSpeed::SpeedStana();
+        //-----------------вывод температуры-------------------------------------
+        Show (23,"T="); 
+        ShowDigitZ (25,4,Pirometr);
+        Show (31,"C");
+        ShowChar (30,7);
+        //-----------------------------------------------------------------------
+        //индикация работы индуктивного датчика
+        Show (13,"Д1"); 
+        if (nsSpeed::D_1==0)
+            ShowChar (15,4);
+        if (nsSpeed::D_1==1) 
+            ShowChar (15,3);
+        // Вывод скорости стана M/МИН
+        ShowDigitZ (0, 3, speed/100);
+        Show (3,",");
+        // ======= выводятся последнии 2 цифры =======
+        ShowDigitZ (4, 2, speed);
+        Show (7,"М/МИН");
+        //------------------------------------------------------------------------------
+        //---------------------------------АЦП------------------------------------------
+        ShowChar(20,'A');
+        // критическая секция
+        {
+            CritSec csm;
+            ACP_DANNIE = nsTok::usrTok;
+        }
+        //--------------------------Вывод данных с АЦП----------------------------------
+        ACP_DANNIE=(ACP_DANNIE-0)*nsAcp::ACP/1000;
+        nsAcp::ACP_DANNIE_RS=ACP_DANNIE+0;
+        ShowDigitZ (16,3,(ACP_DANNIE+0));//Вывод данных с АЦП
+        //----------------------------------------------------------------------------------
+    }
 void Perexod_w_indicasia (void)//Возврат из начального меню "Настройка оборудования"
 {
 P1=0;//Обнуление первой цифры пароля
@@ -267,7 +260,7 @@ void Menu_1  (void)//Длинна окружности изм?
  Show(29,"("); 
  Show(31,")"); 
  ShowChar(30,0x7E);
- ShowDigitZ(16,4,S);
+ ShowDigitZ(16,4,nsSpeed::S);
  Show(21,"mm"); 
  reset_auto_repeat();//Выкл автоповтор
 }
@@ -289,9 +282,9 @@ void Menu_2 (void)//Коэффициент АЦП изм?
   Show(29,"("); 
   Show(31,")"); 
   ShowChar(30,0x7E);
-  ShowDigitZ(16,1,ACP/1000); 
+  ShowDigitZ(16,1,nsAcp::ACP/1000); 
   Show(17,",");
-  ShowDigitZ(18,3,ACP);
+  ShowDigitZ(18,3,nsAcp::ACP);
 }
 void Perexod_exit_menu3 (void)
 {
@@ -310,7 +303,7 @@ Show(24,"ИЗМ.?");
 Show(29,"("); 
 Show(31,")"); 
 ShowChar(30,0x7E);
-ShowDigitZ(16,3,Korecsia_zero); 
+ShowDigitZ(16,3,nsAcp::Korecsia_zero); 
 }
 void Menu_4 (void)//Установка смещения нуля
 {reset_auto_repeat();//Выкл автоповтор
@@ -319,7 +312,7 @@ Show(24,"ИЗМ.?");
 Show(29,"("); 
 Show(31,")"); 
 ShowChar(30,0x7E);
-ShowDigitZ(16,4,Smehenie_zero); 
+ShowDigitZ(16,4,nsAcp::Smehenie_zero); 
 }
 void Wxod_Smehenia (void)//вход смещения нуля
 {
@@ -367,25 +360,25 @@ Show(24,"СОХ.?");
 Show(29,"("); 
 Show(31,")"); 
 ShowChar(30,0x7E);
-ShowDigitZ(16,4,S); 
+ShowDigitZ(16,4,nsSpeed::S); 
 Show(21,"mm"); 
 }
 void Wwod_dlina_min (void)
 {
 set_auto_repeat();//Вкл автоповтор
-if ( S<=0 ) S=0;
-else S--;
+if ( nsSpeed::S<=0 ) nsSpeed::S=0;
+else nsSpeed::S--;
 }
 void Wwod_dlina_plu (void)
 {
 set_auto_repeat();//Вкл автоповтор
-if ( S>=2000 ) S=2000;
-else S++;
+if ( nsSpeed::S>=2000 ) nsSpeed::S=2000;
+else nsSpeed::S++;
 }
 void Wwod_dlina_exit (void)
 {      /*Запись во флешь длинны оркужности*/
-WriteEeprom (15,((unsigned char *)&S)[0]);// 1 байт
-WriteEeprom (16,((unsigned char *)&S)[1]);// 2 байт
+    WriteEeprom (15,((unsigned char *)&nsSpeed::S)[0]);// 1 байт
+    WriteEeprom (16,((unsigned char *)&nsSpeed::S)[1]);// 2 байт
 ClearDisplay();
 modes=9;  
 }
@@ -404,28 +397,28 @@ Show(0,"КОЭФФИЦИЕНТ АЦП.");
   Show(29,"("); 
   Show(31,")"); 
   ShowChar(30,0x7E);
-  ShowDigitZ(16,1,ACP/1000); 
+  ShowDigitZ(16,1,nsAcp::ACP/1000); 
   Show(17,",");
-  ShowDigitZ(18,3,ACP);
+  ShowDigitZ(18,3,nsAcp::ACP);
 }
 void Wwod_ACP_min (void)
 {
 set_auto_repeat();//Вкл автоповтор
-if ( ACP<=0 ) ACP=0;
-else ACP--;
+if ( nsAcp::ACP<=0 ) nsAcp::ACP=0;
+else nsAcp::ACP--;
 }
 void Wwod_ACP_plu (void)
 {
 set_auto_repeat();//Вкл автоповтор
-if ( ACP>=2000 ) ACP=2000;
-else ACP++; 
+if ( nsAcp::ACP>=2000 ) nsAcp::ACP=2000;
+else nsAcp::ACP++; 
 }
 void Wwod_ACP_exit (void)
 {       /*Запись во флешь коэффициента АЦП*/
-WriteEeprom (19,((unsigned char *)&ACP)[0]);// 1 байт
-WriteEeprom (20,((unsigned char *)&ACP)[1]);// 2 байт
-WriteEeprom (21,((unsigned char *)&ACP)[2]);// 3 байт
-WriteEeprom (22,((unsigned char *)&ACP)[3]);// 4 байт
+    WriteEeprom (19,((unsigned char *)&nsAcp::ACP)[0]);// 1 байт
+    WriteEeprom (20,((unsigned char *)&nsAcp::ACP)[1]);// 2 байт
+    WriteEeprom (21,((unsigned char *)&nsAcp::ACP)[2]);// 3 байт
+    WriteEeprom (22,((unsigned char *)&nsAcp::ACP)[3]);// 4 байт
 ClearDisplay();
 modes=10;  
 }
@@ -438,27 +431,27 @@ Show(24,"СОХ.?");
 Show(29,"("); 
 Show(31,")"); 
 ShowChar(30,0x7E);
-ShowDigitZ(16,3,Korecsia_zero); 
+ShowDigitZ(16,3,nsAcp::Korecsia_zero); 
 }
 void Wwod_zero_min (void)
 {
 set_auto_repeat();//Вкл автоповтор
-if ( Korecsia_zero<=0 ) Korecsia_zero=0;
-else Korecsia_zero--;
+if ( nsAcp::Korecsia_zero<=0 ) nsAcp::Korecsia_zero=0;
+else nsAcp::Korecsia_zero--;
 }
 void Wwod_zero_plu (void)
 {
 set_auto_repeat();//Вкл автоповтор
-if ( Korecsia_zero>=512 ) Korecsia_zero=512;
-else Korecsia_zero++;
+if ( nsAcp::Korecsia_zero>=512 ) nsAcp::Korecsia_zero=512;
+else nsAcp::Korecsia_zero++;
 }
 void Wwod_zero_exit (void)
 {
       /*Запись во флешь коеффициента коррекции нуля*/
-WriteEeprom (23,((unsigned char *)&Korecsia_zero)[0]);// 1 байт
-WriteEeprom (24,((unsigned char *)&Korecsia_zero)[1]);// 2 байт
-WriteEeprom (25,((unsigned char *)&Korecsia_zero)[2]);// 3 байт
-WriteEeprom (26,((unsigned char *)&Korecsia_zero)[3]);// 4 байт
+    WriteEeprom (23,((unsigned char *)&nsAcp::Korecsia_zero)[0]);// 1 байт
+    WriteEeprom (24,((unsigned char *)&nsAcp::Korecsia_zero)[1]);// 2 байт
+    WriteEeprom (25,((unsigned char *)&nsAcp::Korecsia_zero)[2]);// 3 байт
+    WriteEeprom (26,((unsigned char *)&nsAcp::Korecsia_zero)[3]);// 4 байт
 ClearDisplay();
 modes=11;  
 }
@@ -471,29 +464,29 @@ Show(24,"COX.?");
 Show(29,"("); 
 Show(31,")"); 
 ShowChar(30,0x7E);
-ShowDigitZ(16,4,Smehenie_zero); 
+ShowDigitZ(16,4,nsAcp::Smehenie_zero); 
 }
 
 void Wwod_Smehenie_plu (void)
 {
 set_auto_repeat();//Вкл автоповтор
-if ( Smehenie_zero>=1000 ) Smehenie_zero=1000;
-else Smehenie_zero++;
+if ( nsAcp::Smehenie_zero>=1000 ) nsAcp::Smehenie_zero=1000;
+else nsAcp::Smehenie_zero++;
 }
 
 void Wwod_Smehenie_min (void)
 {
 set_auto_repeat();//Вкл автоповтор
-if ( Smehenie_zero<=0 ) Smehenie_zero=0;
-else Smehenie_zero--;
+if ( nsAcp::Smehenie_zero<=0 ) nsAcp::Smehenie_zero=0;
+else nsAcp::Smehenie_zero--;
 }
 void Wwod_Smehenie_exit (void)
 {
             /*Запись во флешь смещение нуля*/
-WriteEeprom (27,((unsigned char *)&Smehenie_zero)[0]);// 1 байт
-WriteEeprom (28,((unsigned char *)&Smehenie_zero)[1]);// 2 байт
-WriteEeprom (29,((unsigned char *)&Smehenie_zero)[2]);// 3 байт
-WriteEeprom (30,((unsigned char *)&Smehenie_zero)[3]);// 4 байт
+    WriteEeprom (27,((unsigned char *)&nsAcp::Smehenie_zero)[0]);// 1 байт
+    WriteEeprom (28,((unsigned char *)&nsAcp::Smehenie_zero)[1]);// 2 байт
+    WriteEeprom (29,((unsigned char *)&nsAcp::Smehenie_zero)[2]);// 3 байт
+    WriteEeprom (30,((unsigned char *)&nsAcp::Smehenie_zero)[3]);// 4 байт
 ClearDisplay();
 modes=12;  
 }
@@ -510,7 +503,7 @@ ShowDigitZ(16,3,nsSpeed::rezultat_skorosti);//об/мин
 __enable_interrupt(); // Разрешить глобальное прерывание 
 Show(8,"АЦП:");
 __disable_interrupt();//Запретить глобальное прерывание
-ShowDigitZ(12,4,acp_date);//Данные с АЦП
+ShowDigitZ(12,4,nsTok::acp_date);//Данные с АЦП
 __enable_interrupt(); // Разрешить глобальное прерывание 
 //---------------------вывод температуры------------------
   ShowDigitZ (26,4,Pirometr);
@@ -563,38 +556,19 @@ void (* const __flash Function[][6])(void) = {
 {Wwod_Smehenie,Dummy,Wwod_Smehenie_min ,Wwod_Smehenie_plu,Wwod_Smehenie_exit,Dummy},//Ввод смещение нуля
 
 };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-void menu(void)
-   
-{ 
-   unsigned char key;
-  if ( scan_ready())
-       {
-        key=read_key();
-       Function[modes][key]();
-        }
-  else
-        { 
-        Function[modes][0]();
-        }
 }
+
+void menu()
+{
+    unsigned char key;
+    if (scan_ready())
+    {
+        key=read_key();
+        nsMenu::Function[nsMenu::modes][key]();
+    }
+    else
+    { 
+        nsMenu::Function[nsMenu::modes][0]();
+    }
+}
+

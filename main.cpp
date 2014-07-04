@@ -1,11 +1,10 @@
 
 #include "main.h"
 
-extern unsigned long Korecsia_zero;////Кооэффициент коррекции нуля для АЦП 
-extern unsigned long Smehenie_zero;//Смещение нуля
-extern unsigned int S,Z2,Z1;//длинна окружности
-unsigned long ACP=0;//Коэфициент для АЦП
-extern unsigned char Start_Data_RS485;//Если 1-передача в RS-485 разрешена.Если 0-запрещена.
+//extern unsigned long Korecsia_zero;////Кооэффициент коррекции нуля для АЦП 
+//extern unsigned long Smehenie_zero;//Смещение нуля
+//extern unsigned int S,Z2,Z1;//длинна окружности
+//extern unsigned char Start_Data_RS485;//Если 1-передача в RS-485 разрешена.Если 0-запрещена.
 void iniz_port (void)
 {
 DDRB=0x00;//Порт B на чтение
@@ -36,14 +35,20 @@ __enable_interrupt(); // Разрешить глобальное прерывание
 ClearDisplay();// Очистка ЖКИ   
 __delay_cycles (3200000);//Задержка 0,2 секунды для накопления фильтром значение входного сигнала с индуктивного датчика
 //------------------Востановление данных из флешь памяти------------------------------------------------------- 
-            /*Коэффициент длинны окружности*/
+// Коэффициент длинны окружности
+nsSpeed::init();
+/*
 ((unsigned char *)&S)[0] = ReadEeprom(15);// - 1байт
 ((unsigned char *)&S)[1] = ReadEeprom(16);// - 2байт
-                 /*Коэффициент АЦП*/
+*/
+                 //Коэффициент АЦП
+nsAcp::init();
+/*
 ((unsigned char *)&ACP)[0] = ReadEeprom(19);// - 1байт
 ((unsigned char *)&ACP)[1] = ReadEeprom(20);// - 2байт
 ((unsigned char *)&ACP)[2] = ReadEeprom(21);// - 3байт
 ((unsigned char *)&ACP)[3] = ReadEeprom(22);// - 4байт
+*/
           /*Коэффициент калибровки нуля*/
 //((unsigned char *)&Korecsia_zero)[0] = ReadEeprom(23);// - 1байт
 //((unsigned char *)&Korecsia_zero)[1] = ReadEeprom(24);// - 2байт

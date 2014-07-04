@@ -10,6 +10,10 @@ namespace nsSpeed
     unsigned char flag_new         = 0;     // новое значение импульса
     unsigned char flag_reset_shet  = 0;     // Флаг остановки измерения-Если 1 счёт разрешон 0-запрещён
     unsigned int Buf_impuls        = 0;     // Буфер для просмотра данных с счётчика импульсов
+    unsigned long skorost_stana    = 0;     // скорость стана метры в минуту
+    unsigned int S                 = 0;     // Длинна окружности
+    unsigned char newData          = 0;     // новая скорость
+    unsigned long bufer_skorost    = 0;     // хранение скорости стана метры в минуту 
     //---------------Переменные для фильтрации входного сигнала с индуктивного датчика-------------------------------------------
     unsigned char D1        = 0;    // Переменная для входного сигнала с индуктивного датчика
     unsigned int Chethik_D1 = 0;    // Счётчик для устранения дребезга
@@ -39,6 +43,7 @@ namespace nsSpeed
             rezultat_skorosti=(120000/1)/(shethik_impulsow);//Расчитать скорость об/мин (1-кол.секторов)            
             Buf_impuls=shethik_impulsow;//передача данных со счётчика в буфер данных для просмотра
             shethik_impulsow=0;//бнуление счётчика 
+            newData = 1;
         }                                       
         flag_old=flag_new;//новое значение датчика присвоить старому
     }
@@ -71,14 +76,37 @@ namespace nsSpeed
             }
         }
     }
-
+    // ================ USER ===============================
+    // -----------Speed Stan-----------------------------
+    unsigned long SpeedStana()
+    {
+        if (newData)
+        {
+            {
+                CritSec csSpeed;
+                bufer_skorost = rezultat_skorosti;
+            }
+            skorost_stana = S*bufer_skorost/10;
+            newData = 0;
+        }
+        return skorost_stana;
+    }
+    
+    
     // for timer
     void timer()
     {
         // Опрос датчика
         signal_D1();
-        // Измерение скорости
+        // Измерение линейной скорости стана
         Skorost();
+    }
+    // init
+    void init()
+    {
+        // Коэффициент длинны окружности
+        ((unsigned char *)&S)[0] = ReadEeprom(15);// - 1байт
+        ((unsigned char *)&S)[1] = ReadEeprom(16);// - 2байт
     }
 }
 

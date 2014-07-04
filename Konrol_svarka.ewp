@@ -2001,6 +2001,9 @@
   <file>
     <name>$PROJ_DIR$\timer.cpp</name>
   </file>
+  <file>
+    <name>$PROJ_DIR$\TokMetr.cpp</name>
+  </file>
 </project>
 
 

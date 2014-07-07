@@ -42,7 +42,7 @@ nsSpeed::init();
 ((unsigned char *)&S)[1] = ReadEeprom(16);// - 2байт
 */
                  //Коэффициент АЦП
-nsAcp::init();
+nsTok::init();
 /*
 ((unsigned char *)&ACP)[0] = ReadEeprom(19);// - 1байт
 ((unsigned char *)&ACP)[1] = ReadEeprom(20);// - 2байт

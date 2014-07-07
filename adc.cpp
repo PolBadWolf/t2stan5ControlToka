@@ -8,7 +8,6 @@ namespace nsAcp
     unsigned long ACP_DANNIE_RS=0;  // Подготовленные  данные ACP для передачи в RS232
     unsigned long Smehenie_zero=0;  // Смещение нуля
     unsigned long Korecsia_zero=0;  // Кооэффициент коррекции нуля для АЦП 
-    unsigned long ACP=0;            // Коэфициент для АЦП
     //unsigned int Rezult_ADC = 0;    // Переменная для вывода значения с АЦП на индикатор
     
     void (*CallBackFn)(unsigned int rez);
@@ -57,11 +56,12 @@ namespace nsAcp
     }
     void init()
     {
-                 /*Коэффициент АЦП*/
-((unsigned char *)&ACP)[0] = ReadEeprom(19);// - 1байт
-((unsigned char *)&ACP)[1] = ReadEeprom(20);// - 2байт
-((unsigned char *)&ACP)[2] = ReadEeprom(21);// - 3байт
-((unsigned char *)&ACP)[3] = ReadEeprom(22);// - 4байт
+        /*
+        ((unsigned char *)&ACP)[0] = ReadEeprom(19);// - 1байт
+        ((unsigned char *)&ACP)[1] = ReadEeprom(20);// - 2байт
+        ((unsigned char *)&ACP)[2] = ReadEeprom(21);// - 3байт
+        ((unsigned char *)&ACP)[3] = ReadEeprom(22);// - 4байт
+        */
     }
 
 }

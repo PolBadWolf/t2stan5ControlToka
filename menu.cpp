@@ -39,16 +39,19 @@ void Dummy (void)
         Show (7,"М/МИН");
         //------------------------------------------------------------------------------
         //---------------------------------АЦП------------------------------------------
-        ShowChar(20,'A');
         // критическая секция
         {
             CritSec csm;
-            ACP_DANNIE = nsTok::usrTok;
+            ACP_DANNIE = nsTok::usrTokA;
         }
         //--------------------------Вывод данных с АЦП----------------------------------
+        /*
         ACP_DANNIE=(ACP_DANNIE-0)*nsAcp::ACP/1000;
         nsAcp::ACP_DANNIE_RS=ACP_DANNIE+0;
         ShowDigitZ (16,3,(ACP_DANNIE+0));//Вывод данных с АЦП
+        */
+        ShowDigitZ (16, 3, ACP_DANNIE);//Вывод данных с АЦП в амперах
+        ShowChar(20,'A');
         //----------------------------------------------------------------------------------
     }
 void Perexod_w_indicasia (void)//Возврат из начального меню "Настройка оборудования"
@@ -282,9 +285,9 @@ void Menu_2 (void)//Коэффициент АЦП изм?
   Show(29,"("); 
   Show(31,")"); 
   ShowChar(30,0x7E);
-  ShowDigitZ(16,1,nsAcp::ACP/1000); 
+  ShowDigitZ(16,1,nsTok::kAcpToTok/1000); 
   Show(17,",");
-  ShowDigitZ(18,3,nsAcp::ACP);
+  ShowDigitZ(18,3,nsTok::kAcpToTok);
 }
 void Perexod_exit_menu3 (void)
 {
@@ -397,30 +400,35 @@ Show(0,"КОЭФФИЦИЕНТ АЦП.");
   Show(29,"("); 
   Show(31,")"); 
   ShowChar(30,0x7E);
-  ShowDigitZ(16,1,nsAcp::ACP/1000); 
-  Show(17,",");
-  ShowDigitZ(18,3,nsAcp::ACP);
+  ShowDigitZ(16, 1, nsTok::kAcpToTok/1000); 
+  ShowChar(17, ',');
+  ShowDigitZ(18, 3, nsTok::kAcpToTok);
 }
 void Wwod_ACP_min (void)
 {
-set_auto_repeat();//Вкл автоповтор
-if ( nsAcp::ACP<=0 ) nsAcp::ACP=0;
-else nsAcp::ACP--;
+    set_auto_repeat();//Вкл автоповтор
+    if (nsTok::kAcpToTok>1)
+        nsTok::kAcpToTok--;
 }
-void Wwod_ACP_plu (void)
+void Wwod_ACP_plu(void)
 {
-set_auto_repeat();//Вкл автоповтор
-if ( nsAcp::ACP>=2000 ) nsAcp::ACP=2000;
-else nsAcp::ACP++; 
+    set_auto_repeat();//Вкл автоповтор
+    if (nsTok::kAcpToTok<2000)
+        nsTok::kAcpToTok++;
+    else
+        nsTok::kAcpToTok = 2000;
 }
 void Wwod_ACP_exit (void)
-{       /*Запись во флешь коэффициента АЦП*/
+{       // Запись во флешь коэффициента АЦП
+    nsTok::WriteKacpToTok();
+    /*
     WriteEeprom (19,((unsigned char *)&nsAcp::ACP)[0]);// 1 байт
     WriteEeprom (20,((unsigned char *)&nsAcp::ACP)[1]);// 2 байт
     WriteEeprom (21,((unsigned char *)&nsAcp::ACP)[2]);// 3 байт
     WriteEeprom (22,((unsigned char *)&nsAcp::ACP)[3]);// 4 байт
-ClearDisplay();
-modes=10;  
+    */
+    ClearDisplay();
+    modes=10;  
 }
 //----------------------------Конец ввода данных АЦП--------------------------------
 //-------------------------Ввод коррекции нуля для АЦП----------------------------
